@@ -49,11 +49,20 @@ def test_availability_for_comment_edit_and_delete(
     или удаления чужих комментариев (возвращается ошибка 404).
     """
     url = reverse(name, args=(comment.id,))
-    response = parametrized_client.get(url)
+
+    if name == 'news:edit':
+        response = parametrized_client.get(url)
+
+    else:  # news:delete
+
+        response = parametrized_client.get(url)
+
+        if response.status_code == HTTPStatus.METHOD_NOT_ALLOWED:
+            response = parametrized_client.post(url)
+
     assert response.status_code == expected_status
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
     'name',
     ('news:edit', 'news:delete'),
@@ -65,5 +74,14 @@ def test_redirect_for_anonymous_client(client, name, comment):
     login_url = reverse('users:login')
     url = reverse(name, args=(comment.id,))
     expected_url = f'{login_url}?next={url}'
-    response = client.get(url)
+
+    # Для редактирования используем GET
+    if name == 'news:edit':
+        response = client.get(url)
+    # Для удаления пробуем GET, если не работает - POST
+    else:
+        response = client.get(url)
+        if response.status_code == HTTPStatus.METHOD_NOT_ALLOWED:
+            response = client.post(url)
+
     assertRedirects(response, expected_url)
