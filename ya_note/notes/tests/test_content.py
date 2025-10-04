@@ -27,7 +27,8 @@ class TestRoutes(TestCase):
         """Отдельная заметка передаётся на страницу со списком заметок
         в списке object_list в словаре context.
         В список заметок одного пользователя не попадают заметки
-        другого пользователя."""
+        другого пользователя.
+        """
         users_statuses = (
             (self.author_client, True),
             (self.auth_user_client, False),
