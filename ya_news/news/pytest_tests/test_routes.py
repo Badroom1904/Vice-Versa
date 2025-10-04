@@ -9,13 +9,8 @@ from pytest_django.asserts import assertRedirects
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    'name, method',
-    (
-        ('news:home', 'GET'),
-        ('users:login', 'GET'),
-        ('users:logout', 'POST'),
-        ('users:signup', 'GET'),
-    )
+    'name',
+    ('news:home', 'users:login', 'users:logout', 'users:signup')
 )
 def test_pages_availability(client, name):
     """Главная страница, cтраницы регистрации пользователей,
