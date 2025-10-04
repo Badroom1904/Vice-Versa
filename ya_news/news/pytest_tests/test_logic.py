@@ -38,14 +38,13 @@ def test_user_cant_use_bad_words(author_client, news):
     bad_words_data = {'text': f'Какой-то текст, {BAD_WORDS[0]}, еще текст'}
     url = reverse('news:detail', args=(news.id,))
     response = author_client.post(url, data=bad_words_data)
-    
-    # Вариант 1: Использовать response.context для получения формы
+
     assertFormError(
         response.context['form'],
         field='text',
         errors=WARNING
     )
-    
+
     comments_count = Comment.objects.count()
     assert comments_count == 0
 
